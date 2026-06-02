@@ -128,6 +128,20 @@ async function run() {
       res.json(result);
     });
 
+    //   app.get("/booking", async (req, res) => {
+    //   try {
+    //     const userId = req.query.userId;
+
+    //     const result = await bookingCollection
+    //       .find({ userId: userId })
+    //       .toArray();
+
+    //     res.send(result);
+    //   } catch (error) {
+    //     res.status(500).json({ error: error.message });
+    //   }
+    // });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
