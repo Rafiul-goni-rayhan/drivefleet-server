@@ -82,7 +82,7 @@ async function run() {
       res.json(result);
     });
 
-    // 4-23 eibar edit korar jonno patch api banabo -------------------------------------------
+    // 4-23 eibar edit korar jonno patch api banabo -----------------------------
     app.patch("/car/:id", async (req, res) => {
       const { id } = req.params;
       const updatedData = req.body;
