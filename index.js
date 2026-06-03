@@ -1,7 +1,7 @@
 const dns = require("node:dns");
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
-// const { ObjectId } = require('mongodb'); //upload korar age cmnt kore dite hoy ei line 
+// const { ObjectId } = require('mongodb'); //upload korar age cmnt kore dite hoy ei line
 const express = require("express");
 dotenv = require("dotenv");
 
@@ -69,10 +69,10 @@ async function run() {
 
     // 2 add kora data dekhanor jonno carpager er jonno api banacchi
     // ------------------------------------------------------------------------
-    app.get("/car", async (req, res) => {
-      const result = await carCollection.find().toArray();
-      res.json(result);
-    });
+    // app.get("/car", async (req, res) => {
+    //   const result = await carCollection.find().toArray();
+    //   res.json(result);
+    // });
 
     //3-21 eikhane frontend theke ekta id pathabo ar se match kore oitar data backend theke dibe
     app.get("/car/:id", async (req, res) => {
@@ -87,7 +87,7 @@ async function run() {
       const { id } = req.params;
       const updatedData = req.body;
 
-      const result = carCollection.updateOne(
+      const result = await carCollection.updateOne(
         { _id: new ObjectId(id) },
         { $set: updatedData },
       );
@@ -111,7 +111,7 @@ async function run() {
       }
     });
 
-    app.get("/booking/:userId", async (req, res) => {
+    app.get("/booking/:userId", verifyToken, async (req, res) => {
       const { userId } = req.params;
       console.log(userId);
       const result = await bookingCollection.find({ userId: userId }).toArray();
@@ -127,7 +127,37 @@ async function run() {
 
       res.json(result);
     });
+//search
+app.get("/car", async (req, res) => {
+  try {
+    const { search, type } = req.query;
 
+    let query = {};
+
+    console.log("QUERY PARAMS:", req.query); // debug
+
+ if (search) {
+  const cleanSearch = search.trim();
+  query.carName = {
+    $regex: cleanSearch,
+    $options: "i",
+  };
+}
+
+    if (type && type !== "All") {
+      query.carType = type;
+    }
+
+    console.log("FINAL QUERY:", query); // debug
+
+    const cars = await carCollection.find(query).toArray();
+
+    res.send(cars);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: error.message });
+  }
+});
     //   app.get("/booking", async (req, res) => {
     //   try {
     //     const userId = req.query.userId;
